@@ -15,38 +15,12 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 
 function Promodoro({ route }) {
-  const { takeseconsds, takeminutes, check } = route.params;
-  const noaccentsec = takeseconsds
-    .split("")
-    .filter((element) => element != ":")
-    .join("");
+  // const { takeseconsds, takeminutes, check } = route.params;
 
-  const [minutes, Setminutes] = useState(Number(takeminutes));
-  const [seconds, Setseconds] = useState(Number(noaccentsec));
-  const [checker, Setchecker] = useState(check);
+  function test() {}
 
-  function test() {
-    alert(takeseconsds);
-  }
-
-  const unpause = () => {
-    Setchecker(true);
-  };
-  const pause = () => {
-    Setchecker(false);
-  };
-
-  useEffect(function () {
-    if (check) {
-      const defineinterval = setInterval(() => {
-        Setseconds((number) => number - 1);
-      }, 1000);
-
-      return () => {
-        clearInterval(defineinterval);
-      };
-    }
-  });
+  const unpause = () => {};
+  const pause = () => {};
 
   return (
     <>
@@ -59,9 +33,7 @@ function Promodoro({ route }) {
         }}
       >
         <View>
-          <Text style={stylespormodorto.timerstyle}>
-            {takeminutes}:{seconds}
-          </Text>
+          <Text style={stylespormodorto.timerstyle}>sexo</Text>
         </View>
         <View style={styles.buttondiv}>
           <TouchableOpacity style={styles.Button} onPress={test}>
@@ -86,7 +58,7 @@ export default function MyTab() {
     <NavigationContainer>
       <Tab.Navigator>
         <Tab.Screen name="Home" component={Homepage} />
-        <Tab.Screen name="Promodoro" component={Promodoro} />
+        <Tab.Screen name="interval" component={Promodoro} />
       </Tab.Navigator>
     </NavigationContainer>
   );
@@ -97,76 +69,41 @@ export default function MyTab() {
 // }
 
 const Homepage = ({ navigation }) => {
-  const [inputvalue, Setvalue] = useState(":00");
-  const [couter, Setcounter] = useState(0);
-  const [minutes, Setminutes] = useState("00");
+  const [couterpromo, Setcouterpromo] = useState(1);
+  const names = ["START", "PAUSE"];
+  const [minutes, Setminutes] = useState(0);
+  const [seconds, Setsecondes] = useState(0);
+  const [zeroseconds, Setzeroseconsds] = useState(0);
+  const [zerominutes, Setzerominutes] = useState("");
   const [check, Setcheck] = useState(false);
-  const [zeros, Setzeros] = useState("");
-  const [zerostwo, Setzerostwo] = useState("");
-  const [conterminutes, Setcouterminutes] = useState(0);
+  const [test, Settest] = useState(59);
 
-  // useEffect(() => {
-  //   alert(inputvalue);
-  // }, [inputvalue]);
-  const darkmode = () => {
-    return {
-      backgroundColor: "black",
-    };
-  };
-
-  function handleminutes(minutes) {
-    Setminutes(minutes);
-    Setcouterminutes(Number(minutes));
-  }
-
-  function handlevaluetimer(text) {
-    Setvalue(text);
-    Setcounter(
-      Number(
-        text
-          .split("")
-          .filter((element) => element != "" && element != ":")
-          .join("")
-      )
-    );
-  }
-
-  const pause = () => {
-    Setcheck(false);
-  };
-  function linkwindowns() {
-    navigation.navigate("Promodoro", {
-      takeseconsds: inputvalue,
-      takeminutes: minutes,
-      check: check,
-    });
-  }
-  const clickme = () => {
+  const [name, newname] = useState(names[0]);
+  const changename = () => {
+    const newName = name === names[0] ? names[1] : names[0];
+    newname(newName);
     Setcheck(!check);
-    alert(check);
-    setTimeout(linkwindowns, 2000);
   };
 
   useEffect(() => {
     if (check) {
       const setinterval = setInterval(() => {
-        Setcounter((prevecounte) => prevecounte - 1);
+        Settest((number) => number - 1);
       }, 1000);
-      if (couter == 1 && conterminutes == 0) {
+      Setsecondes(test);
+      test == 0 ? Settest(59) : "nada";
+      test == 0 ? Setminutes(minutes - 1) : "nada";
+      minutes >= 10 ? Setzerominutes("") : Setzerominutes(0);
+      test >= 10 ? Setzeroseconsds("") : Setzeroseconsds(0);
+      if (test == 0 && minutes == 0) {
+        Setcouterpromo(couterpromo + 1);
+        Setsecondes(0);
+        Setminutes(30);
         Setcheck(false);
-        Setcounter(0);
-        Setcouterminutes(0);
+        Setzerominutes("");
+        const newset = name === names[0] ? names[1] : names[0];
+        newname(newset);
       }
-
-      conterminutes === 60 ? Setcouterminutes(10) : "";
-      couter < 10 ? Setzeros("0") : Setzeros("");
-      conterminutes < 10 ? Setzerostwo("0") : Setzerostwo("");
-
-      if (couter == 0) {
-        Setcounter(59);
-        Setcouterminutes((accmin) => accmin - 1);
-      }
-
       return () => {
         clearInterval(setinterval);
       };
@@ -184,38 +121,18 @@ const Homepage = ({ navigation }) => {
 
         <Text style={{ marginTop: 10 }}>helping students to get focus!</Text>
       </View>
-      <View style={styles.Settimediv}>
-        <View style={styles.divinput}>
-          <TextInput
-            maxLength={2}
-            keyboardType="numeric"
-            style={styles.input}
-            value={minutes}
-            onChangeText={handleminutes}
-          ></TextInput>
-          <TextInput
-            value={inputvalue}
-            onChangeText={handlevaluetimer}
-            style={styles.input}
-            keyboardType="numeric"
-          ></TextInput>
-        </View>
-        <View style={styles.buttondiv}>
-          <TouchableOpacity onPress={clickme} style={styles.Button}>
-            <Text style={styles.textbutton}>start</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={pause} style={styles.Button}>
-            <Text style={styles.textbutton}>pause</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-      <Text style={{ marginTop: 60, fontSize: 80 }}>
-        {" "}
-        {zerostwo}
-        {conterminutes}:{zeros}
-        {couter}
-      </Text>
       <StatusBar style="auto" />
+
+      <Text style={styles.time}>
+        {zerominutes}
+        {minutes}:{zeroseconds}
+        {seconds}
+      </Text>
+
+      <TouchableOpacity style={styles.Button} onPress={changename}>
+        <Text style={styles.textbutton}>{name}</Text>
+      </TouchableOpacity>
+      <Text>{couterpromo}#</Text>
     </View>
   );
 };
@@ -225,17 +142,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     alignItems: "center",
-  },
-
-  input: {
-    fontSize: 60,
-    color: "black",
-    marginBottom: 30,
-  },
-  divinput: {
-    flexDirection: "row",
-
-    borderTopColor: "black",
   },
   buttondiv: {
     flexDirection: "row",
@@ -247,6 +153,7 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     height: 36,
     marginHorizontal: 13,
+    marginTop: 40,
   },
   textbutton: {
     fontSize: 14,
@@ -255,14 +162,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     textTransform: "uppercase",
   },
-  Settimediv: {
-    borderRadius: 20,
-    backgroundColor: "aliceblue",
-    alignItems: "center",
+  time: {
+    color: "red",
+    fontSize: 70,
     marginTop: 100,
-    height: 240,
-    justifyContent: "center",
-    width: 260,
   },
 });
 const stylespormodorto = StyleSheet.create({
