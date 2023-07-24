@@ -13,14 +13,46 @@ import {
 import { App } from "./Home";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
+import { Audio } from "expo-av";
 
-function Promodoro({ route }) {
+function Interval({ route }) {
   // const { takeseconsds, takeminutes, check } = route.params;
+  const arraynames = ["Start", "Pause"];
+  const [fakeminutes, newfakeminutes] = useState("5");
+  const [minutes, newminutes] = useState(5);
+  const [seconsds, newseconds] = useState(0);
+  const [fakeseconds, newfakeseconds] = useState(59);
+  const [check, newcheck] = useState(false);
+  const [zeroseconds, newzeroseconds] = useState(0);
+  const [numberview, Setnumberview] = useState(5);
 
-  function test() {}
+  const [btnname, Setbtname] = useState(arraynames[0]);
+  const clickbtn = () => {
+    const savename = arraynames[1];
+    const switchname =
+      btnname === arraynames[0] ? arraynames[1] : arraynames[0];
+    Setbtname(switchname);
+    newcheck(!check);
+  };
 
-  const unpause = () => {};
-  const pause = () => {};
+  fakeminutes == " " ? newminutes(4) : "";
+
+  useEffect(() => {
+    if (check) {
+      const myinterval = setInterval(() => {
+        newfakeseconds((second) => second - 1);
+      }, 1000);
+      newfakeminutes("");
+
+      newseconds(fakeseconds);
+      seconsds >= 10 ? newzeroseconds("") : newzeroseconds(0);
+      seconsds == 0 ? newminutes(minutes - 1) : "";
+      seconsds == 0 ? newfakeseconds(59) : "";
+      return () => {
+        clearInterval(myinterval);
+      };
+    }
+  });
 
   return (
     <>
@@ -32,18 +64,22 @@ function Promodoro({ route }) {
           justifyContent: "center",
         }}
       >
-        <View>
-          <Text style={stylespormodorto.timerstyle}>sexo</Text>
-        </View>
-        <View style={styles.buttondiv}>
-          <TouchableOpacity style={styles.Button} onPress={test}>
-            <Text style={styles.textbutton}>test btn</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.Button} onPress={pause}>
-            <Text style={styles.textbutton}>Pause</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.Button} onPress={unpause}>
-            <Text style={styles.textbutton}>unPause</Text>
+        <View style={pausestyles.timediv}>
+          <Text style={pausestyles.timerstyle}>
+            0{minutes}:{zeroseconds}
+            {seconsds}
+          </Text>
+          <TouchableOpacity style={styles.Button} onPress={clickbtn}>
+            <Text
+              style={{
+                textAlign: "center",
+                fontSize: 14,
+                textTransform: "uppercase",
+                color: "#43C6DB",
+              }}
+            >
+              {btnname}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -58,11 +94,28 @@ export default function MyTab() {
     <NavigationContainer>
       <Tab.Navigator>
         <Tab.Screen name="Home" component={Homepage} />
-        <Tab.Screen name="interval" component={Promodoro} />
+        <Tab.Screen name="interval" component={Interval} />
       </Tab.Navigator>
     </NavigationContainer>
   );
 }
+
+const pausestyles = StyleSheet.create({
+  timerstyle: {
+    fontSize: 70,
+    color: "white",
+  },
+  timediv: {
+    alignItems: "center",
+    marginTop: 50,
+    alignItems: "center",
+    backgroundColor: "#43C6DB",
+    width: 280,
+    height: 300,
+    borderRadius: 20,
+    paddingTop: 80,
+  },
+});
 
 // export default function home() {
 //   return <App />;
@@ -71,12 +124,30 @@ export default function MyTab() {
 const Homepage = ({ navigation }) => {
   const [couterpromo, Setcouterpromo] = useState(1);
   const names = ["START", "PAUSE"];
-  const [minutes, Setminutes] = useState(0);
+  const [minutes, Setminutes] = useState(30);
   const [seconds, Setsecondes] = useState(0);
   const [zeroseconds, Setzeroseconsds] = useState(0);
   const [zerominutes, Setzerominutes] = useState("");
   const [check, Setcheck] = useState(false);
   const [test, Settest] = useState(59);
+
+  const soundObject = new Audio.Sound();
+
+  const playAudio = async () => {
+    try {
+      await soundObject.loadAsync(require("./assets/audios/alarm.mp3"));
+
+      await soundObject.playAsync();
+    } catch (error) {
+      console.error("Erro ao reproduzir o áudio:", error);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      soundObject.unloadAsync();
+    };
+  }, []);
 
   const [name, newname] = useState(names[0]);
   const changename = () => {
@@ -91,11 +162,12 @@ const Homepage = ({ navigation }) => {
         Settest((number) => number - 1);
       }, 1000);
       Setsecondes(test);
-      test == 0 ? Settest(59) : "nada";
-      test == 0 ? Setminutes(minutes - 1) : "nada";
+      seconds == 0 ? Settest(59) : "nada";
+      seconds == 0 ? Setminutes(minutes - 1) : "nada";
       minutes >= 10 ? Setzerominutes("") : Setzerominutes(0);
-      test >= 10 ? Setzeroseconsds("") : Setzeroseconsds(0);
-      if (test == 0 && minutes == 0) {
+      seconds >= 10 ? Setzeroseconsds("") : Setzeroseconsds(0);
+      if (seconds == 0 && minutes == 0) {
+        playAudio();
         Setcouterpromo(couterpromo + 1);
         Setsecondes(0);
         Setminutes(30);
@@ -122,17 +194,18 @@ const Homepage = ({ navigation }) => {
         <Text style={{ marginTop: 10 }}>helping students to get focus!</Text>
       </View>
       <StatusBar style="auto" />
+      <View style={styles.timerdiv}>
+        <Text style={styles.time}>
+          {zerominutes}
+          {minutes}:{zeroseconds}
+          {seconds}
+        </Text>
 
-      <Text style={styles.time}>
-        {zerominutes}
-        {minutes}:{zeroseconds}
-        {seconds}
-      </Text>
-
-      <TouchableOpacity style={styles.Button} onPress={changename}>
-        <Text style={styles.textbutton}>{name}</Text>
-      </TouchableOpacity>
-      <Text>{couterpromo}#</Text>
+        <TouchableOpacity style={styles.Button} onPress={changename}>
+          <Text style={styles.textbutton}>{name}</Text>
+        </TouchableOpacity>
+      </View>
+      <Text style={{ marginTop: 16 }}>{couterpromo}#</Text>
     </View>
   );
 };
@@ -148,7 +221,7 @@ const styles = StyleSheet.create({
   },
   Button: {
     borderRadius: 9,
-    backgroundColor: "black",
+    backgroundColor: "white",
     width: 85,
     paddingTop: 5,
     height: 36,
@@ -157,21 +230,22 @@ const styles = StyleSheet.create({
   },
   textbutton: {
     fontSize: 14,
-    color: "white",
+    color: "#FF6347",
 
     textAlign: "center",
     textTransform: "uppercase",
   },
   time: {
-    color: "red",
+    color: "white",
     fontSize: 70,
-    marginTop: 100,
   },
-});
-const stylespormodorto = StyleSheet.create({
-  timerstyle: {
-    fontSize: 60,
-    color: "black",
-    marginBottom: 40,
+  timerdiv: {
+    marginTop: 50,
+    alignItems: "center",
+    backgroundColor: "#FF6347",
+    width: 280,
+    height: 300,
+    borderRadius: 20,
+    paddingTop: 80,
   },
 });
