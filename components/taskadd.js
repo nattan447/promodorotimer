@@ -10,7 +10,7 @@ import {
   Alert,
 } from "react-native";
 
-export default function taskpart() {
+export default function taskpart(props) {
   const [item, Setitem] = useState("");
   const [inputvalue, Setinputvalue] = useState("");
   const [oi, Setoi] = useState();
@@ -82,7 +82,15 @@ export default function taskpart() {
         {check ? (
           <View style={styletask}>
             <Text>{oi}</Text>
-            <Text style={{ opacity: 0.6 }}>0/1</Text>
+            <Text
+              style={
+                props.state == 1
+                  ? { opacity: 0.6, color: "green" }
+                  : { opacity: 0.6 }
+              }
+            >
+              {props.state}/1
+            </Text>
           </View>
         ) : undefined}
       </View>

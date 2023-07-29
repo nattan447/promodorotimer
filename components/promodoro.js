@@ -16,12 +16,13 @@ import { Audio } from "expo-av";
 export default function Promodoro({ navigation }) {
   const [couterpromo, Setcouterpromo] = useState(1);
   const names = ["START", "PAUSE"];
-  const [minutes, Setminutes] = useState(30);
+  const [minutes, Setminutes] = useState(1);
   const [seconds, Setsecondes] = useState(0);
   const [zeroseconds, Setzeroseconsds] = useState(0);
   const [zerominutes, Setzerominutes] = useState("");
   const [check, Setcheck] = useState(false);
   const [test, Settest] = useState(59);
+  const [completask, Setcompletetask] = useState(0);
 
   const soundObject = new Audio.Sound();
 
@@ -61,6 +62,7 @@ export default function Promodoro({ navigation }) {
       if (seconds == 0 && minutes == 0) {
         playAudio();
         Setcouterpromo(couterpromo + 1);
+        Setcompletetask(1);
 
         Setsecondes(0);
         Setminutes(30);
@@ -91,20 +93,32 @@ export default function Promodoro({ navigation }) {
           <Text style={{ marginTop: 10 }}>helping students to get focus!</Text>
         </View>
         <StatusBar style="auto" />
-        <View style={styles.timerdiv}>
-          <Text style={styles.time}>
-            {zerominutes}
-            {minutes}:{zeroseconds}
-            {seconds}
-          </Text>
+        <View
+          style={{
+            width: 280,
+            alignItems: "center",
+            borderRadius: 2,
+            height: 310,
+            marginTop: 30,
+            borderWidth: 2,
+            backgroundColor: "black",
+          }}
+        >
+          <View style={styles.timerdiv}>
+            <Text style={styles.time}>
+              {zerominutes}
+              {minutes}:{zeroseconds}
+              {seconds}
+            </Text>
 
-          <TouchableOpacity style={styles.btnretro} onPress={changename}>
-            <Text style={styles.buttonText}>{name}</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.btnretro} onPress={changename}>
+              <Text style={styles.buttonText}>{name}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
         <Text style={{ marginTop: 16 }}>{couterpromo}#</Text>
         <View style={{ width: 400, height: 400, paddingBottom: 150 }}>
-          <Task />
+          <Task state={completask} />
         </View>
       </View>
     </ScrollView>
@@ -148,7 +162,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   buttonText: {
-    color: "red", // Texto branco para contraste
+    color: "black", // Texto branco para contraste
     fontSize: 16,
     fontWeight: "bold",
     textTransform: "uppercase",
@@ -166,13 +180,27 @@ const styles = StyleSheet.create({
     fontSize: 70,
   },
   timerdiv: {
-    marginTop: 50,
+    marginRight: 10,
+
     alignItems: "center",
-    backgroundColor: "#ae1c1c",
     width: 280,
     height: 300,
-    borderRadius: 20,
+    borderRadius: 8,
     paddingTop: 80,
+    backgroundColor: "#242222", // Cor laranja vibrante típica dos anos 90
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderWidth: 4,
+
+    borderColor: "black", // Cor preta para a borda grossa
+    shadowColor: "#000000", // Cor preta para a sombra
+    shadowOpacity: 0.4,
+    shadowRadius: 7,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    elevation: 10,
   },
 });
 const pausestyles = StyleSheet.create({
