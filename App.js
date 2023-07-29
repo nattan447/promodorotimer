@@ -16,15 +16,31 @@ import { NavigationContainer } from "@react-navigation/native";
 import { Audio } from "expo-av";
 
 function Interval({ route }) {
-  // const { takeseconsds, takeminutes, check } = route.params;
+  // const { promodorocouter } = route.params;
   const arraynames = ["Start", "Pause"];
   const [fakeminutes, newfakeminutes] = useState("5");
-  const [minutes, newminutes] = useState(5);
+  const [minutes, newminutes] = useState(1);
   const [seconsds, newseconds] = useState(0);
   const [fakeseconds, newfakeseconds] = useState(59);
   const [check, newcheck] = useState(false);
   const [zeroseconds, newzeroseconds] = useState(0);
   const [numberview, Setnumberview] = useState(5);
+  const soundObject = new Audio.Sound();
+  const playAudio = async () => {
+    try {
+      await soundObject.loadAsync(require("./assets/audios/alarm.mp3"));
+
+      await soundObject.playAsync();
+    } catch (error) {
+      console.error("Erro ao reproduzir o áudio:", error);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      soundObject.unloadAsync();
+    };
+  }, []);
 
   const [btnname, Setbtname] = useState(arraynames[0]);
   const clickbtn = () => {
@@ -34,8 +50,6 @@ function Interval({ route }) {
     Setbtname(switchname);
     newcheck(!check);
   };
-
-  fakeminutes == " " ? newminutes(4) : "";
 
   useEffect(() => {
     if (check) {
@@ -48,6 +62,17 @@ function Interval({ route }) {
       seconsds >= 10 ? newzeroseconds("") : newzeroseconds(0);
       seconsds == 0 ? newminutes(minutes - 1) : "";
       seconsds == 0 ? newfakeseconds(59) : "";
+      const oi = () => {};
+      if (seconsds === 0 && minutes === 0) {
+        playAudio();
+        newminutes(5);
+        newcheck(false);
+        const newname =
+          btnname === arraynames[0] ? arraynames[1] : arraynames[0];
+        Setbtname(newname);
+
+        newseconds(0);
+      }
       return () => {
         clearInterval(myinterval);
       };
@@ -169,6 +194,7 @@ const Homepage = ({ navigation }) => {
       if (seconds == 0 && minutes == 0) {
         playAudio();
         Setcouterpromo(couterpromo + 1);
+
         Setsecondes(0);
         Setminutes(30);
         Setcheck(false);
@@ -190,7 +216,6 @@ const Homepage = ({ navigation }) => {
         >
           promodorotimer
         </Text>
-
         <Text style={{ marginTop: 10 }}>helping students to get focus!</Text>
       </View>
       <StatusBar style="auto" />
