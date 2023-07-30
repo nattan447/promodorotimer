@@ -8,21 +8,24 @@ import {
   TouchableOpacity,
   TextInput,
   Alert,
+  FlatList,
 } from "react-native";
+import styles from "../estilos/styles";
+import Promodoro from "./promodoro";
 
-export default function taskpart(props) {
+export default function Taskpart(props) {
   const [item, Setitem] = useState("");
   const [inputvalue, Setinputvalue] = useState("");
   const [oi, Setoi] = useState();
   const [check, Setcheck] = useState(false);
-  const [styletask, Setstyletask] = useState(undefined);
-  const [task, changetaks] = useState("ADD ITEM");
+  const [array, Setarray] = useState([]);
+  const [id, Setid] = useState(0);
 
   const additem = () => {
     const div = (
       <View style={styles.divtask}>
         <TouchableOpacity style={styles.touchtask} onPress={close}>
-          <Text style={styles.textbtn}>fechar</Text>
+          <Text style={styles.textbtn}>close</Text>
         </TouchableOpacity>
 
         <TextInput
@@ -32,12 +35,11 @@ export default function taskpart(props) {
         ></TextInput>
         <View style={{ alignItems: "center", paddingTop: 30 }}>
           <TouchableOpacity onPress={add}>
-            <Text style={styles.textbtn}>adicionar</Text>
+            <Text style={styles.textbtn}>add</Text>
           </TouchableOpacity>
         </View>
       </View>
     );
-
     Setitem(div);
   };
 
@@ -47,50 +49,60 @@ export default function taskpart(props) {
   }
   function callback(conteudo) {
     Setoi(conteudo);
+    const arrayobj = [
+      ...array,
+      { task: conteudo, id: id, status: props.state },
+    ];
+    Setarray(arrayobj);
   }
 
   const add = () => {
     Setitem(undefined);
-    changetaks("CHANGE ITEM");
+    Setid(id + 1);
     Setcheck(true);
-    const style = {
-      alignItems: "center",
-      width: 200,
-      height: 26,
-      backgroundColor: "white",
-      flexDirection: "row",
-      justifyContent: "space-around",
-      borderRadius: 7,
-      position: "absolute",
-    };
-    Setstyletask(style);
   };
 
-  function close() {
+  const close = () => {
     Setoi(oi);
+    Setarray(array);
     Setitem(false);
     Setinputvalue("");
-  }
+  };
+
+  const keyExtractor = (item) => item.id;
+  const renderItem = ({ item }) => {
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-around",
+        }}
+      >
+        <Text>{item.task}</Text>
+        <Text style={props.state === 1 ? { color: "green" } : undefined}>
+          {item.status}/1
+        </Text>
+      </View>
+    );
+  };
+
+  const ItemSeparator = () => <View style={styles.separator} />;
 
   return (
     <View style={styles.container}>
       <View style={{ alignItems: "center" }}>
         <TouchableOpacity onPress={additem} style={styles.btn}>
-          <Text style={{ color: "white", textAlign: "center" }}>{task}</Text>
+          <Text style={{ color: "black", textAlign: "center" }}>ADD ITEM</Text>
         </TouchableOpacity>
 
         {check ? (
-          <View style={styletask}>
-            <Text>{oi}</Text>
-            <Text
-              style={
-                props.state == 1
-                  ? { opacity: 0.6, color: "green" }
-                  : { opacity: 0.6 }
-              }
-            >
-              {props.state}/1
-            </Text>
+          <View style={styles.listdiv}>
+            <FlatList
+              data={array}
+              keyExtractor={keyExtractor}
+              renderItem={renderItem}
+              ItemSeparatorComponent={ItemSeparator}
+            ></FlatList>
           </View>
         ) : undefined}
       </View>
@@ -102,42 +114,6 @@ export default function taskpart(props) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#white",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  divtask: {
-    backgroundColor: "white",
-    height: 200,
-    width: 300,
-    zIndex: 2,
-    marginBottom: 20,
-    borderRadius: 11,
-  },
-
-  touchtask: {
-    height: 25,
-    width: 44,
-    borderRadius: 14,
-    marginTop: 10,
-    marginLeft: 10,
-  },
-  textbtn: {
-    textAlign: "center",
-    color: "red",
-  },
-  btn: {
-    backgroundColor: "#ae1c1c",
-    height: 26,
-    width: 200,
-    borderRadius: 7,
-    position: "absolute",
-    marginTop: 50,
-  },
-});
 const setlistpromodoro = StyleSheet.create({
   input: {
     textAlign: "center",

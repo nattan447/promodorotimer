@@ -48,8 +48,7 @@ export default function Promodoro({ navigation }) {
     newname(newName);
     Setcheck(!check);
   };
-  
-  
+
   useEffect(() => {
     if (check) {
       const setinterval = setInterval(() => {
@@ -60,11 +59,11 @@ export default function Promodoro({ navigation }) {
       seconds == 0 ? Setminutes(minutes - 1) : "nada";
       minutes >= 10 ? Setzerominutes("") : Setzerominutes(0);
       seconds >= 10 ? Setzeroseconsds("") : Setzeroseconsds(0);
+      Setcompletetask(0);
       if (seconds == 0 && minutes == 0) {
         playAudio();
         Setcouterpromo(couterpromo + 1);
         Setcompletetask(1);
-
         Setsecondes(0);
         Setminutes(30);
         Setcheck(false);
@@ -100,9 +99,10 @@ export default function Promodoro({ navigation }) {
             alignItems: "center",
             borderRadius: 2,
             height: 310,
-            marginTop: 30,
+            marginTop: 80,
             borderWidth: 2,
             backgroundColor: "black",
+            marginBottom: 20,
           }}
         >
           <View style={styles.timerdiv}>
@@ -117,8 +117,8 @@ export default function Promodoro({ navigation }) {
             </TouchableOpacity>
           </View>
         </View>
-        <Text style={{ marginTop: 16 }}>{couterpromo}#</Text>
-        <View style={{ width: 400, height: 400, paddingBottom: 150 }}>
+
+        <View style={{ width: 400, height: 400, paddingBottom: 200 }}>
           <Task state={completask} />
         </View>
       </View>

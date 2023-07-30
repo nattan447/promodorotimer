@@ -13,6 +13,7 @@ import {
 
 import Promodoro from "./components/promodoro";
 import Interval from "./components/interval";
+import Task from "./components/taskadd";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { Audio } from "expo-av";
@@ -30,7 +31,6 @@ export default function MyTab() {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     height: 36,
     marginHorizontal: 13,
-  
+
     marginTop: 40,
   },
   textbutton: {
