@@ -48,7 +48,8 @@ export default function Promodoro({ navigation }) {
     newname(newName);
     Setcheck(!check);
   };
-
+  
+  
   useEffect(() => {
     if (check) {
       const setinterval = setInterval(() => {
