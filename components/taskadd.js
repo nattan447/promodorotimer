@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import styles from "../estilos/styles";
 import Promodoro from "./promodoro";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Taskpart(props) {
   const [item, Setitem] = useState("");
@@ -20,7 +21,13 @@ export default function Taskpart(props) {
   const [check, Setcheck] = useState(false);
   const [array, Setarray] = useState([]);
   const [id, Setid] = useState(0);
+  const [completask, Setcompletetask] = useState("in ");
 
+  useEffect(() => {
+    setInterval(() => {
+      props.state == "completed" ? Setcompletetask("completed") : undefined;
+    }, 1000);
+  }, []);
   const additem = () => {
     const div = (
       <View style={styles.divtask}>
@@ -42,17 +49,13 @@ export default function Taskpart(props) {
     );
     Setitem(div);
   };
-
-  function handleinput(text) {
+  const handleinput = (text) => {
     callback(text);
     Setinputvalue(text);
-  }
+  };
   function callback(conteudo) {
     Setoi(conteudo);
-    const arrayobj = [
-      ...array,
-      { task: conteudo, id: id, status: props.state },
-    ];
+    const arrayobj = [...array, { task: conteudo, id: id, status: completask }];
     Setarray(arrayobj);
   }
 
@@ -80,14 +83,19 @@ export default function Taskpart(props) {
       >
         <Text>{item.task}</Text>
         <Text style={props.state === 1 ? { color: "green" } : undefined}>
-          {item.status}/1
+          {item.status}
         </Text>
       </View>
     );
   };
 
   const ItemSeparator = () => <View style={styles.separator} />;
-
+  const test = () => {
+    alert(n1);
+  };
+  const testan = () => {
+    alert(completask);
+  };
   return (
     <View style={styles.container}>
       <View style={{ alignItems: "center" }}>

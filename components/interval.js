@@ -11,12 +11,14 @@ import {
   View,
 } from "react-native";
 import { Audio } from "expo-av";
+import Styleinterval from "../estilos/styleinterval";
+import styleinterval from "../estilos/styleinterval";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Interval({ route }) {
-  // const { promodorocouter } = route.params;
   const arraynames = ["Start", "Pause"];
   const [fakeminutes, newfakeminutes] = useState("5");
-  const [minutes, newminutes] = useState(1);
+  const [minutes, newminutes] = useState(5);
   const [seconsds, newseconds] = useState(0);
   const [fakeseconds, newfakeseconds] = useState(59);
   const [check, newcheck] = useState(false);
@@ -78,77 +80,30 @@ export default function Interval({ route }) {
 
   return (
     <>
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: "white",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+      <LinearGradient
+        colors={["#292727", "#393535", "#31259B"]}
+        start={{ x: 0, y: 1 }}
+        end={{ x: 1, y: 0 }}
+        locations={[0.5, 0.25, 0.25]}
+        style={styleinterval.container}
       >
-        <View style={pausestyles.timediv}>
-          <Text style={pausestyles.timerstyle}>
-            0{minutes}:{zeroseconds}
-            {seconsds}
-          </Text>
-          <TouchableOpacity style={styles.Button} onPress={clickbtn}>
-            <Text
-              style={{
-                textAlign: "center",
-                fontSize: 14,
-                textTransform: "uppercase",
-                color: "#43C6DB",
-              }}
-            >
-              {btnname}
+        <View style={styleinterval.borderdiv}>
+          <View style={styleinterval.timerdiv}>
+            <Text style={pausestyles.timerstyle}>
+              0{minutes}:{zeroseconds}
+              {seconsds}
             </Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={Styleinterval.btnretro} onPress={clickbtn}>
+              <Text style={Styleinterval.buttonText}>{btnname}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </LinearGradient>
     </>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-    alignItems: "center",
-  },
-  buttondiv: {
-    flexDirection: "row",
-  },
-  Button: {
-    borderRadius: 9,
-    backgroundColor: "white",
-    width: 85,
-    paddingTop: 5,
-    height: 36,
-    marginHorizontal: 13,
-    marginTop: 40,
-  },
-  textbutton: {
-    fontSize: 14,
-    color: "#FF6347",
 
-    textAlign: "center",
-    textTransform: "uppercase",
-  },
-  time: {
-    color: "white",
-    fontSize: 70,
-  },
-  timerdiv: {
-    marginTop: 50,
-    alignItems: "center",
-    backgroundColor: "#FF6347",
-    width: 280,
-    height: 300,
-    borderRadius: 20,
-    paddingTop: 80,
-  },
-});
-
-const pausestyles = StyleSheet.create({ 
+const pausestyles = StyleSheet.create({
   timerstyle: {
     fontSize: 70,
     color: "white",

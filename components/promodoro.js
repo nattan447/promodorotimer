@@ -11,8 +11,11 @@ import {
   View,
   ScrollView,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import Task from "./taskadd";
 import { Audio } from "expo-av";
+import Stylepromo from "../estilos/stylepromo";
+import stylepromo from "../estilos/stylepromo";
 export default function Promodoro({ navigation }) {
   const [couterpromo, Setcouterpromo] = useState(1);
   const names = ["START", "PAUSE"];
@@ -22,7 +25,7 @@ export default function Promodoro({ navigation }) {
   const [zerominutes, Setzerominutes] = useState("");
   const [check, Setcheck] = useState(false);
   const [test, Settest] = useState(59);
-  const [completask, Setcompletetask] = useState(0);
+  const [completask, Setcompletetask] = useState("in progress");
 
   const soundObject = new Audio.Sound();
 
@@ -35,7 +38,6 @@ export default function Promodoro({ navigation }) {
       console.error("Erro ao reproduzir o áudio:", error);
     }
   };
-
   useEffect(() => {
     return () => {
       soundObject.unloadAsync();
@@ -59,11 +61,12 @@ export default function Promodoro({ navigation }) {
       seconds == 0 ? Setminutes(minutes - 1) : "nada";
       minutes >= 10 ? Setzerominutes("") : Setzerominutes(0);
       seconds >= 10 ? Setzeroseconsds("") : Setzeroseconsds(0);
+
       Setcompletetask(0);
       if (seconds == 0 && minutes == 0) {
         playAudio();
         Setcouterpromo(couterpromo + 1);
-        Setcompletetask(1);
+        Setcompletetask("completed");
         Setsecondes(0);
         Setminutes(30);
         Setcheck(false);
@@ -79,131 +82,45 @@ export default function Promodoro({ navigation }) {
 
   return (
     <ScrollView>
-      <View style={styles.container}>
-        <View style={{ marginTop: 30, paddingTop: 30 }}>
-          <Text
-            style={{
-              color: "#ae1c1c",
-              fontSize: 23,
-              textTransform: "uppercase",
-            }}
-          >
-            promodorotimer
-          </Text>
-          <Text style={{ marginTop: 10 }}>helping students to get focus!</Text>
-        </View>
-        <StatusBar style="auto" />
-        <View
-          style={{
-            width: 280,
-            alignItems: "center",
-            borderRadius: 2,
-            height: 310,
-            marginTop: 80,
-            borderWidth: 2,
-            backgroundColor: "black",
-            marginBottom: 20,
-          }}
+      <View style={stylepromo.container}>
+        <LinearGradient
+          s
+          colors={["#292727", "#393535", "#31259B"]}
+          start={{ x: 1, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          locations={[0.5, 0.25, 0.25]}
+          style={{ alignItems: "center" }}
         >
-          <View style={styles.timerdiv}>
-            <Text style={styles.time}>
-              {zerominutes}
-              {minutes}:{zeroseconds}
-              {seconds}
-            </Text>
-
-            <TouchableOpacity style={styles.btnretro} onPress={changename}>
-              <Text style={styles.buttonText}>{name}</Text>
-            </TouchableOpacity>
+          <View style={{ marginTop: 30, paddingTop: 30 }}>
+            <Text style={pausestyles.promodorotext}>promodorotimer</Text>
           </View>
-        </View>
+          <StatusBar style="auto" />
+          <View style={stylepromo.borderdiv}>
+            <View style={stylepromo.timerdiv}>
+              <Text style={stylepromo.time}>
+                {zerominutes}
+                {minutes}:{zeroseconds}
+                {seconds}
+              </Text>
 
-        <View style={{ width: 400, height: 400, paddingBottom: 200 }}>
-          <Task state={completask} />
-        </View>
+              <TouchableOpacity
+                style={stylepromo.btnretro}
+                onPress={changename}
+              >
+                <Text style={stylepromo.buttonText}>{name}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={{ width: 400, height: 400, paddingBottom: 200 }}>
+            <Task state={completask} />
+          </View>
+        </LinearGradient>
       </View>
     </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#eecdce",
-    alignItems: "center",
-  },
-  buttondiv: {
-    flexDirection: "row",
-  },
-  Button: {
-    borderRadius: 9,
-    backgroundColor: "white",
-    width: 85,
-    paddingTop: 5,
-    height: 36,
-    marginHorizontal: 13,
-    marginTop: 40,
-  },
-  btnretro: {
-    marginTop: 40,
-    backgroundColor: "white", // Cor laranja vibrante típica dos anos 90
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    borderWidth: 2,
-    borderColor: "#000000", // Cor preta para a borda grossa
-    shadowColor: "#000000", // Cor preta para a sombra
-    shadowOpacity: 0.4,
-    shadowRadius: 7,
-
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    elevation: 4,
-  },
-  buttonText: {
-    color: "black", // Texto branco para contraste
-    fontSize: 16,
-    fontWeight: "bold",
-    textTransform: "uppercase",
-    textAlign: "center",
-  },
-  textbutton: {
-    fontSize: 14,
-    color: "#FF6347",
-
-    textAlign: "center",
-    textTransform: "uppercase",
-  },
-  time: {
-    color: "white",
-    fontSize: 70,
-  },
-  timerdiv: {
-    marginRight: 10,
-
-    alignItems: "center",
-    width: 280,
-    height: 300,
-    borderRadius: 8,
-    paddingTop: 80,
-    backgroundColor: "#242222", // Cor laranja vibrante típica dos anos 90
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderWidth: 4,
-
-    borderColor: "black", // Cor preta para a borda grossa
-    shadowColor: "#000000", // Cor preta para a sombra
-    shadowOpacity: 0.4,
-    shadowRadius: 7,
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    elevation: 10,
-  },
-});
 const pausestyles = StyleSheet.create({
   timerstyle: {
     fontSize: 70,
@@ -218,5 +135,12 @@ const pausestyles = StyleSheet.create({
     height: 300,
     borderRadius: 20,
     paddingTop: 80,
+  },
+  promodorotext: {
+    color: "white",
+    fontSize: 30,
+    textTransform: "uppercase",
+    fontWeight: 4,
+    fontWeight: "bold",
   },
 });
