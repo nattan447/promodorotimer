@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import styles from "../estilos/styles";
 import Promodoro from "./promodoro";
-import { LinearGradient } from "expo-linear-gradient";
 
 export default function Taskpart(props) {
   const [item, Setitem] = useState("");
@@ -21,13 +20,8 @@ export default function Taskpart(props) {
   const [check, Setcheck] = useState(false);
   const [array, Setarray] = useState([]);
   const [id, Setid] = useState(0);
-  const [completask, Setcompletetask] = useState("in ");
+  const [completestyle, Setstyle] = useState({ textAlign: "center" });
 
-  useEffect(() => {
-    setInterval(() => {
-      props.state == "completed" ? Setcompletetask("completed") : undefined;
-    }, 1000);
-  }, []);
   const additem = () => {
     const div = (
       <View style={styles.divtask}>
@@ -55,7 +49,10 @@ export default function Taskpart(props) {
   };
   function callback(conteudo) {
     Setoi(conteudo);
-    const arrayobj = [...array, { task: conteudo, id: id, status: completask }];
+    const arrayobj = [
+      ...array,
+      { task: conteudo, id: id, status: "in constrution" },
+    ];
     Setarray(arrayobj);
   }
 
@@ -71,6 +68,9 @@ export default function Taskpart(props) {
     Setitem(false);
     Setinputvalue("");
   };
+  const addline = () => {
+    return { textDecorationLine: "line-through" };
+  };
 
   const keyExtractor = (item) => item.id;
   const renderItem = ({ item }) => {
@@ -79,44 +79,52 @@ export default function Taskpart(props) {
         style={{
           flexDirection: "row",
           justifyContent: "space-around",
+          paddingTop: 20,
         }}
       >
-        <Text>{item.task}</Text>
-        <Text style={props.state === 1 ? { color: "green" } : undefined}>
-          {item.status}
-        </Text>
+        <Text style={Completetask}>{item.task}</Text>
+        <Text style={Completetask}>{item.status}</Text>
       </View>
     );
   };
 
   const ItemSeparator = () => <View style={styles.separator} />;
   const test = () => {
-    alert(n1);
+    alert(props.seconds);
   };
-  const testan = () => {
-    alert(completask);
+  const Completetask = () => {
+    Setstyle({ textDecorationLine: "line-through", textAlign: "center" });
   };
+
   return (
     <View style={styles.container}>
       <View style={{ alignItems: "center" }}>
         <TouchableOpacity onPress={additem} style={styles.btn}>
-          <Text style={{ color: "black", textAlign: "center" }}>ADD ITEM</Text>
+          <Text
+            style={{ color: "black", textAlign: "center", fontWeight: "bold" }}
+          >
+            ADD TASK
+          </Text>
         </TouchableOpacity>
 
         {check ? (
           <View style={styles.listdiv}>
+            <TouchableOpacity onPress={Completetask}>
+              <Text style={completestyle}> all tasks completed?</Text>
+            </TouchableOpacity>
             <FlatList
               data={array}
               keyExtractor={keyExtractor}
               renderItem={renderItem}
               ItemSeparatorComponent={ItemSeparator}
+              style={{ padding: 30 }}
             ></FlatList>
           </View>
         ) : undefined}
       </View>
 
       {item}
-
+      {/* <Button onPress={test} title="testando"></Button> */}
       <StatusBar style="auto" />
     </View>
   );

@@ -17,15 +17,40 @@ import Task from "./components/taskadd";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { Audio } from "expo-av";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const Tab = createBottomTabNavigator();
 
 export default function MyTab() {
   return (
     <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name="Promodoro" component={Promodoro} />
-        <Tab.Screen name="interval" component={Interval} />
+      <Tab.Navigator
+        screenOptions={{
+          tabBarLabelStyle: {
+            fontSize: 14,
+          },
+        }}
+      >
+        <Tab.Screen
+          name="Promodoro"
+          component={Promodoro}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="md-timer" size={size} color="black" />
+            ),
+            headerShown: false,
+          }}
+        />
+        <Tab.Screen
+          name="interval"
+          component={Interval}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="timer-outline" size={size} color="#000" />
+            ),
+            headerShown: false,
+          }}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );

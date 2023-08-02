@@ -25,7 +25,7 @@ export default function Promodoro({ navigation }) {
   const [zerominutes, Setzerominutes] = useState("");
   const [check, Setcheck] = useState(false);
   const [test, Settest] = useState(59);
-  const [completask, Setcompletetask] = useState("in progress");
+  const [style, Setstyleline] = useState(false);
 
   const soundObject = new Audio.Sound();
 
@@ -49,6 +49,7 @@ export default function Promodoro({ navigation }) {
     const newName = name === names[0] ? names[1] : names[0];
     newname(newName);
     Setcheck(!check);
+    name === "START" ? Setstyleline(false) : undefined;
   };
 
   useEffect(() => {
@@ -57,16 +58,15 @@ export default function Promodoro({ navigation }) {
         Settest((number) => number - 1);
       }, 1000);
       Setsecondes(test);
+
       seconds == 0 ? Settest(59) : "nada";
       seconds == 0 ? Setminutes(minutes - 1) : "nada";
       minutes >= 10 ? Setzerominutes("") : Setzerominutes(0);
       seconds >= 10 ? Setzeroseconsds("") : Setzeroseconsds(0);
-
-      Setcompletetask(0);
       if (seconds == 0 && minutes == 0) {
+        Setstyleline(true);
         playAudio();
         Setcouterpromo(couterpromo + 1);
-        Setcompletetask("completed");
         Setsecondes(0);
         Setminutes(30);
         Setcheck(false);
@@ -113,7 +113,7 @@ export default function Promodoro({ navigation }) {
           </View>
 
           <View style={{ width: 400, height: 400, paddingBottom: 200 }}>
-            <Task state={completask} />
+            <Task status={style} />
           </View>
         </LinearGradient>
       </View>

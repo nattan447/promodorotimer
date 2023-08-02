@@ -87,6 +87,8 @@ export default function Interval({ route }) {
         locations={[0.5, 0.25, 0.25]}
         style={styleinterval.container}
       >
+        <Text style={pausestyles.intervaltext}>interval</Text>
+
         <View style={styleinterval.borderdiv}>
           <View style={styleinterval.timerdiv}>
             <Text style={pausestyles.timerstyle}>
@@ -117,5 +119,11 @@ const pausestyles = StyleSheet.create({
     height: 300,
     borderRadius: 20,
     paddingTop: 80,
+  },
+  intervaltext: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "white",
+    textTransform: "uppercase",
   },
 });
